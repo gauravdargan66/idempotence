@@ -1,0 +1,26 @@
+- hosts: webserver
+  tasks:
+        - name: "Installing httpd"
+          package:
+            name: "httpd"
+            state: present
+
+        - name: "Enabling firewall for port 8080"
+          firewalld:
+            port: "8080/tcp"
+            state: enabled
+            permanent: yes
+            immediate: yes
+
+        - name: "Copying content in file under document root"
+          copy:
+            dest: "/var/www/html/index.html"
+            content: "My New Webpage 1"
+          notify: Restarting Services
+
+  handlers:
+        - name: "Restarting Services"
+          service:
+            name: "httpd"
+            state: restarted
+
